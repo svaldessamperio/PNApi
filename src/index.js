@@ -4,7 +4,7 @@ var cors = require('cors');
 const morgan = require ('morgan');
 
 //Settings
-app.set('port', process.env.PORT || 5000);
+app.set('port', process.env.PORT || 3000);
 app.set('jason spaces', 2);
 
 //middlewares
@@ -15,7 +15,8 @@ app.use(express.urlencoded({extended: false})); //soporta formularios en html
 app.use(express.json()); // soporta JSONs
 
 //ROUTES
-app.use('/api/pushNotToken', require('./routes/pushNotToken'));
+app.use('/api/users', require('./routes/Users'));
+app.use('/api/notify', require('./routes/Notify'));
 
 //Startting Server
 app.listen(app.get('port'), ()=> {
