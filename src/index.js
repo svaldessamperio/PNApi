@@ -2,6 +2,8 @@ const express = require ('express');
 const app = express();
 var cors = require('cors');
 const morgan = require ('morgan');
+const admin = require('firebase-admin/app');
+const serviceAccount = require('./util/appnotificaciones-66c44-firebase-adminsdk-qaxnr-24ba9ffe99.json');
 
 //Settings
 app.set('port', process.env.PORT || 5000);
@@ -15,7 +17,13 @@ app.use(express.urlencoded({extended: false})); //soporta formularios en html
 app.use(express.json()); // soporta JSONs
 
 //ROUTES
-app.use('/api/pushNotToken', require('./routes/pushNotToken'));
+app.use('/api/users', require('./routes/Users'));
+app.use('/api/notify', require('./routes/Notify'));
+
+
+admin.initializeApp({
+    credential: admin.cert(serviceAccount)
+});
 
 //Startting Server
 app.listen(app.get('port'), ()=> {
