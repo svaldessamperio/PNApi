@@ -61,4 +61,34 @@ router.post('/sendMessageByEmail', (req, res) => {
     res.send('200 Recibido:');
 });
 
+router.post('/sendMessageByNotifyType', (req, res) => {
+
+    const { idTipoNotificacion, idTipoEscalamiento, notification } = req.body;
+    const tokens = [];
+
+    sql.connect(conf).then(pool => {
+        return pool.request()
+            .input('IdTipoNotificacion', sql.Int, idTipoNotificacion)
+            .input('IdTipoEscalamiento', sql.Int, idTipoEscalamiento)
+            //.query('select * from ControlAplicaciones.dbo.cat_usuarios where usu_idusuario = @idEmpleado')
+            .execute('[SEL_TOKENBYTIPONOTIFICACION_SP]')
+    }).then(result => {
+        if (result.recordset.length > 0){
+            const elements = JSON.parse(result.recordset[0].token);
+            for(i=0; i<elements.length; i++){
+                tokens.push(elements[i]._W);
+            }
+        }
+
+        const send = sendMessageToTokens(tokens, notification);
+        res.send('200 Recibido:');
+
+    }).catch(err => {
+        console.log('SEGUNDO ERR: ' + err);
+        res.send('500 Recibido:');
+    })
+
+
+});
+
 module.exports = router;
